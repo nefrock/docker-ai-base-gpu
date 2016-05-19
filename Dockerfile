@@ -74,6 +74,7 @@ RUN cd ~ && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
           -D CMAKE_INSTALL_PREFIX=/usr/local \
           -D BUILD_PYTHON_SUPPORT=ON \
+          -D CUDA_GENERATION=Kepler \
           .. && \
     make -j8 && \
     make install && \
