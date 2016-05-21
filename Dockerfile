@@ -100,3 +100,5 @@ RUN cd ~ && \
     rm -rf ~/dlib-tmp
 
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib/stubs
+
+ln -s  /usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so  /usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so.1
