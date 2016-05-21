@@ -98,3 +98,5 @@ RUN cd ~ && \
     cmake --build . --config Release && \
     cp dlib.so /usr/local/lib/python2.7/dist-packages && \
     rm -rf ~/dlib-tmp
+
+ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib/stubs
