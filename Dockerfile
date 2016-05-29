@@ -1,4 +1,4 @@
-FROM nvidia/cuda:7.5-cudnn5-devel-ubuntu14.04
+FROM nvidia/cuda:7.5-cudnn4-devel-ubuntu14.04
 MAINTAINER ttsurumi@nefrock.com
 
 RUN apt-get update
@@ -99,6 +99,4 @@ RUN cd ~ && \
     cp dlib.so /usr/local/lib/python2.7/dist-packages && \
     rm -rf ~/dlib-tmp
 
-ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib/stubs
-
-ln -s  /usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so  /usr/local/cuda/targets/x86_64-linux/lib/stubs/libcuda.so.1
+ENV LD_LIBRARY_PATH /usr/local/cuda/lib64
