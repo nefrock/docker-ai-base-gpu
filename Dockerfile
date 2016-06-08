@@ -78,6 +78,8 @@ RUN cd ~ && \
     make install && \
     rm -rf ~/ocv-tmp
 
+WORKDIR $CAFFE_ROOT
+
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
     for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
     mkdir build && cd build && \
