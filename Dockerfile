@@ -87,6 +87,7 @@ RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
     make -j"$(nproc)"
 
 RUN ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so
+RUN ldconfig
 
 RUN cd ~ && \
     mkdir -p dlib-tmp && \
