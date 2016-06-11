@@ -61,6 +61,8 @@ RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
 
 WORKDIR /workspace
 
+RUN pip install numpy
+
 RUN cd ~ && \
     mkdir -p ocv-tmp && \
     cd ocv-tmp && \
@@ -71,8 +73,17 @@ RUN cd ~ && \
     cd release && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
           -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D BUILD_PYTHON_SUPPORT=ON \
+          -D BUILD_opencv_java=OFF \
+          -D WITH_IPP=OFF \
+          -D WITH_1394=OFF \
+          -D WITH_FFMPEG=OFF \
+          -D BUILD_EXAMPLES=OFF \
+          -D BUILD_TESTS=OFF \
+          -D BUILD_PERF_TESTS=OFF \
+          -D BUILD_DOCS=OFF  \
           -D CUDA_GENERATION=Kepler \
+          -D BUILD_NEW_PYTHON_SUPPORT=ON \
+          -D PYTHON_EXECUTABLE=$(which python) \
           .. && \
     make -j8 && \
     make install && \
@@ -87,6 +98,7 @@ RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
     make -j"$(nproc)"
 
 RUN ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so
+RUN ln -s /usr/local/nvidia/lib64/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
 RUN ldconfig
 
 RUN cd ~ && \
