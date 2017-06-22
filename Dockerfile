@@ -23,10 +23,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     libprotobuf-dev \
     libsnappy-dev \
     protobuf-compiler \
-    python-dev \
-    python-scipy \
-    python-numpy \
-    python-tk \
     python3-dev \
     python3-scipy \
     python3-numpy \
@@ -131,7 +127,7 @@ RUN cd ~ && \
     mkdir -p dlib-tmp && \
     cd dlib-tmp && \
     curl -L \
-         https://github.com/davisking/dlib/archive/v19.2.tar.gz -o dlib.tar.gz && \
+         https://github.com/davisking/dlib/archive/v19.4.tar.gz -o dlib.tar.gz && \
     tar zxvf dlib.tar.gz && \
     cd dlib-19.2/examples && \
     mkdir build && \
