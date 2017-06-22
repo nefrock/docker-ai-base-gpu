@@ -27,7 +27,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     python3-scipy \
     python3-numpy \
     python3-tk\
-    python-pip \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
@@ -93,6 +92,9 @@ WORKDIR $CAFFE_ROOT
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
+RUN pip install --upgrade pip
+
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
     for req in $(cat python/requirements.txt) pydot; do pip install $req; done
 
@@ -122,6 +124,8 @@ ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
 ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
 RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
 
+RUN apt-get install -y python-setuptools
+
 # install dlib
 RUN cd ~ && \
     mkdir -p dlib-tmp && \
@@ -129,7 +133,7 @@ RUN cd ~ && \
     curl -L \
          https://github.com/davisking/dlib/archive/v19.4.tar.gz -o dlib.tar.gz && \
     tar zxvf dlib.tar.gz && \
-    cd dlib-19.2/examples && \
+    cd dlib-19.4/examples && \
     mkdir build && \
     cd build && \
     cmake .. && \
@@ -140,13 +144,5 @@ RUN cd ~ && \
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64
 
 RUN apt-get install -y libopenblas-dev swig
-# install faiss
+
 WORKDIR /root
-RUN git clone https://github.com/facebookresearch/faiss.git
-COPY faiss/makefile.inc /tmp
-RUN cp /tmp/makefile.inc ~/faiss/ && \
-    cd faiss && \
-    make tests/test_blas -j $(nproc) && \
-    make -j $(nproc) && \
-    make tests/demo_sift1M -j $(nproc) && \
-    make py
