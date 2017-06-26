@@ -24,8 +24,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     libsnappy-dev \
     protobuf-compiler \
     python3-dev \
-    python3-scipy \
-    python3-numpy \
     python3-tk\
     python3-pip \
     python3-setuptools \
@@ -51,6 +49,7 @@ RUN apt-get install --assume-yes \
     libjasper-dev
 
 RUN pip3 install --upgrade pip
+RUN pip3 install numpy scipy
 
 WORKDIR /workspace
 
