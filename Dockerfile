@@ -103,12 +103,6 @@ RUN make test -j"$(nproc)"
 RUN make pycaffe -j"$(nproc)"
 RUN make distribute
 
-#RUN make all -j"$(nproc)" && \
-#    make test -j"$(nproc)" && \
-#    make runtest -j"$(nproc)" && \
-#    make pycaffe -j"$(nproc)" && \
-#    make distribute
-
 RUN ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so
 RUN ln -s /usr/local/nvidia/lib64/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
 RUN ldconfig
