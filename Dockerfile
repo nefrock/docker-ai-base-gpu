@@ -28,8 +28,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     python3-numpy \
     python3-tk\
     python3-pip \
+    python3-setuptools \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN apt-get install -y \
     gfortran \
@@ -42,9 +42,6 @@ RUN apt-get install -y \
     pkg-config \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-
 # https://github.com/BVLC/caffe/wiki/OpenCV-3.1-Installation-Guide-on-Ubuntu-16.04
 RUN apt-get install --assume-yes \
     libdc1394-22 \
@@ -52,6 +49,8 @@ RUN apt-get install --assume-yes \
     libpng12-dev \
     libtiff5-dev \
     libjasper-dev
+
+RUN pip3 install --upgrade pip
 
 WORKDIR /workspace
 
@@ -85,18 +84,14 @@ RUN cd ~ && \
     apt-get update && \
     rm -rf ~/ocv-tmp
 
-
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
 
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
-RUN pip install --upgrade pip
-
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    for req in $(cat python/requirements.txt) pydot; do pip install $req; done
+    for req in $(cat python/requirements.txt) pydot; do pip3 install $req; done
 
 COPY caffeconf/Makefile /opt/caffe/
 COPY caffeconf/Makefile.config /opt/caffe/
@@ -114,7 +109,6 @@ RUN make distribute
 #    make pycaffe -j"$(nproc)" && \
 #    make distribute
 
-
 RUN ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so
 RUN ln -s /usr/local/nvidia/lib64/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
 RUN ldconfig
@@ -123,8 +117,6 @@ ENV PYCAFFE_ROOT $CAFFE_ROOT/python
 ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
 ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
 RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
-
-RUN apt-get install -y python-setuptools
 
 # install dlib
 RUN cd ~ && \
@@ -139,7 +131,7 @@ RUN cd ~ && \
     cmake .. && \
     cmake --build .  && \
     cd ../../ && \
-    python setup.py install
+    python3 setup.py install
 
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64
 
