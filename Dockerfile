@@ -84,33 +84,11 @@ RUN cd ~ && \
     apt-get update && \
     rm -rf ~/ocv-tmp
 
-ENV CAFFE_ROOT=/opt/caffe
-WORKDIR $CAFFE_ROOT
-
-# FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
-ENV CLONE_TAG=master
-
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    for req in $(cat python/requirements.txt) pydot; do pip3 install $req; done
-
-COPY caffeconf/Makefile /opt/caffe/
-COPY caffeconf/Makefile.config /opt/caffe/
-RUN cd /usr/lib/x86_64-linux-gnu &&  ln -s libboost_python-py35.so libboost_python3.so
-
-RUN make all -j"$(nproc)"
-RUN make test -j"$(nproc)"
-#RUN make runtest -j"$(nproc)"
-RUN make pycaffe -j"$(nproc)"
-RUN make distribute
 
 RUN ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so
 RUN ln -s /usr/local/nvidia/lib64/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
 RUN ldconfig
 
-ENV PYCAFFE_ROOT $CAFFE_ROOT/python
-ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
-ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
-RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
 
 # install dlib
 RUN cd ~ && \
